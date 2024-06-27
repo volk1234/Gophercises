@@ -14,9 +14,22 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
 
 # Go workspace file
 go.work
 go.work.sum
+
+.DS_Store
+.scannerwork
+vendor/
+bazel-*
+example/*.ts
+example/*.m3u8
+go.mod.un~
+go.mod~
+workspace_status.sh
+.bazelrc.user
+.bazelrc.aws
+node_modules
+.terraform
+yarn-error.log
