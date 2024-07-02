@@ -5,48 +5,75 @@ import (
 	"os"
 	"encoding/csv"
 	"flag"
+	"strings"
 )
+
+type quiz struct{
+	q string
+	a string
+}
+
+func coreQuiz (records []quiz){
+
+    total := len(records)
+	fmt.Printf("total is #%d: %s\n", total)
+	correct := 0
+	for i, record := range records{
+			var input string
+			fmt.Printf("Question #%d: %s\n", i+1, record.q)
+			_, err := fmt.Scanf("%s\n", &input)
+			if err != nil {
+				fmt.Printf("Error reading user input: %v\n",err)
+			}
+
+			if input == record.a {
+				fmt.Printf("Correct! %s equals %s\n", input, record.a)
+				correct++
+			}else{
+				fmt.Printf("Incorrect! %s does not equal %s\n", input, record.a)
+			}
+
+		fmt.Printf("Left: %d\n\n", total-i-1 )
+	}
+	fmt.Printf("Quiz results:\nTotal questions: %d\nCorrect answers:%d\nIncorrect answers:%d\n", total, correct, total-correct)
+}
 
 func main (){
 
-	qfile_name := flag.String("f", "/home/teth/repos/Gophercises/ex1/problems.csv", "path to quiz db file")
+	qFileName := flag.String("f", "problems.csv", "path to quiz db file")
 	flag.Parse()
 
-	fmt.Println("file to load: ", *qfile_name)
+	fmt.Println("file to load: ", *qFileName)
 
-	qfile, err := os.Open(*qfile_name)
+	qfile, err := os.Open(*qFileName)
 	if err != nil{
-		fmt.Println("File open error:", err)
-		return
+		dead(err.Error())
 	}
+
 	defer qfile.Close()
 
-	creader := csv.NewReader(qfile)
-
-	qrecords, err := creader.ReadAll()
+	c_reader := csv.NewReader(qfile)
+	qrecords, err := c_reader.ReadAll()
 	if err != nil{
-		fmt.Println("CSV-file Read error: ", err)
-		return
+		dead(err.Error())
 	}
 
-	for i, record := range qrecords{
-		if len(record) >=2 {
-			var input int
-			q := record[0]
-			a := record[1]
+	questions := parseLines(qrecords)
+	coreQuiz (questions)
+}
 
-			fmt.Printf("Question #%d: %s\n", i, q)
-			answ, err := fmt.Scanf("%d\n", &input)
-            if err != nil {
-                fmt.Printf("error user input",err)
-            }
-			if answ == a {
-				fmt.Println("Correct! ", answ, "equal", a)
-			}else{
-				fmt.Println("You are qrong! ", answ, "NOT equal", a)
-			}
-		}else{
-            fmt.Println("Skipping malformed record:", record)
-        }
+func parseLines(lines [][]string) []quiz {
+	ret := make([]quiz, len(lines))
+	for i, line := range lines{
+		ret[i] = quiz{
+			q: line[0],
+			a: strings.TrimSpace(line[1]),
+		}
 	}
+	return ret
+}
+
+func dead(msg string){
+	fmt.Printf(">> Fatal: %s\n", msg)
+	os.Exit(1)
 }
