@@ -16,7 +16,7 @@ type quiz struct{
 func coreQuiz (records []quiz){
 
     total := len(records)
-	fmt.Printf("total is #%d: %s\n", total)
+	fmt.Printf("total is #%d:\n", total)
 	correct := 0
 	for i, record := range records{
 			var input string
@@ -41,9 +41,11 @@ func coreQuiz (records []quiz){
 func main (){
 
 	qFileName := flag.String("f", "problems.csv", "path to quiz db file")
+	qTime := flag.Uint("t", 30, "time limit per question, sec.")
 	flag.Parse()
 
 	fmt.Println("file to load: ", *qFileName)
+	fmt.Println("seconds to answer: ", *qTime)
 
 	qfile, err := os.Open(*qFileName)
 	if err != nil{
