@@ -15,6 +15,12 @@ type quiz struct{
 	a string
 }
 
+type param struct{
+	filename *string
+	timeLimit *uint
+	shuffle *bool
+}
+
 func coreQuiz (records []quiz, duration uint){
 
     total := len(records)
@@ -62,25 +68,29 @@ func coreQuiz (records []quiz, duration uint){
 
 func main (){
 
-	qFileName := flag.String("f", "problems.csv", "path to quiz db file")
-	qTime := flag.Uint("t", 10, "time limit per question, sec.")
-	qShuffle := flag.Bool("s", true, "if shuffle quiz questions")
+	param := param{}
+	param.filename = flag.String("f", "problems.csv", "path to quiz db file")
+	param.timeLimit = flag.Uint("t", 10, "time limit per question, sec.")
+	param.shuffle = flag.Bool("s", true, "if shuffle quiz questions")
 	flag.Parse()
-	fmt.Println("file to load: ", *qFileName)
-	fmt.Println("seconds to answer: ", *qTime)
-	fmt.Println("shuffle questions: ", *qShuffle)
-	qfile, err := os.Open(*qFileName)
+
+	fmt.Println("file to load: ", *param.filename)
+	fmt.Println("seconds to answer: ", *param.timeLimit)
+	fmt.Println("shuffle questions: ", *param.shuffle)
+
+	qfile, err := os.Open(*param.filename)
 	if err != nil{
 		dead(err.Error())
 	}
 	defer qfile.Close()
+	
 	c_reader := csv.NewReader(qfile)
 	qrecords, err := c_reader.ReadAll()
 	if err != nil{
 		dead(err.Error())
 	}
-	questions := parseLines(qrecords, *qShuffle)
-	coreQuiz (questions,*qTime)
+	questions := parseLines(qrecords, *param.shuffle)
+	coreQuiz (questions,*param.timeLimit)
 }
 
 func parseLines(lines [][]string, shuffle bool) []quiz {
