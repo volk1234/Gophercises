@@ -84,13 +84,13 @@ func main() {
 	}
 
 	yaml := `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
-- path: /anek
-  url: https://www.anekdot.ru/
-`
+	- path: /urlshort
+	  url: https://github.com/gophercises/urlshort
+	- path: /urlshort-final
+	  url: https://github.com/gophercises/urlshort/tree/solution
+	- path: /anek
+	  url: https://www.anekdot.ru/
+	`
 	json := `[{"path": "/urlshort", "url": "https://github.com/gophercises/urlshort"}, {"path": "/urlshort-final", "url": "https://github.com/gophercises/urlshort/tree/solution"}, {"path": "/anek", "url": "https://www.anekdot.ru/"}]`
 
 	useYaml := flag.Bool("isyaml", false, "use yaml handler")
